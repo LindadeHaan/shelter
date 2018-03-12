@@ -4,22 +4,27 @@ var express = require('express')
 var db = require('../db')
 var helpers = require('./helpers')
 
+
+
 module.exports = express()
   .set('view engine', 'ejs')
   .set('views', 'view')
   .use(express.static('static'))
+  .use('/image', express.static('db/image'))
   // TODO: Serve the images in `db/image` on `/image`.
   .get('/', all)
   /* TODO: Other HTTP methods. */
-  // .post('/', add)
-  // .get('/:id', get)
-  // .put('/:id', set)
-  // .patch('/:id', change)
-  // .delete('/:id', remove)
+  //.post('/', add)
+  .get('/:id', get)
+  //.put('/:id', set)
+  //.patch('/:id', change)
+  //.delete('/:id', remove)
   .listen(1902)
 
 function all(req, res) {
-  var result = {errors: [], data: db.all()}
+  var result = {errors: [],
+    data: db.all()
+  }
 
   /* Use the following to support just HTML:  */
   res.render('list.ejs', Object.assign({}, result, helpers))
@@ -29,4 +34,29 @@ function all(req, res) {
   //   json: () => res.json(result),
   //   html: () => res.render('list.ejs', Object.assign({}, result, helpers))
   // })
+}
+
+function get(req, res) {
+  var id = req.params.id
+  var has
+
+  try {
+    has = db.has(id)
+  } catch (err) {
+    onerror(400, res)
+  }
+
+  if (has) {
+    var result = {
+      data: db.get(id)
+    }
+    res.format({
+      json: () => res.json(result),
+      html: () => res.render('detail.ejs', Object.assign({}, result, helpers))
+    })
+  } else if (db.removed(id)) {
+    onerror(410, res)
+  } else {
+    onerror(404, res)
+  }
 }
