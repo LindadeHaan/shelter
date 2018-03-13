@@ -54,9 +54,5 @@ function get(req, res) {
       json: () => res.json(result),
       html: () => res.render('detail.ejs', Object.assign({}, result, helpers))
     })
-  } else if (db.removed(id)) {
-    onerror(410, res)
-  } else {
-    onerror(404, res)
-  }
+
 }
