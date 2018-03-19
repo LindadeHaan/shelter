@@ -36,23 +36,44 @@ function all(req, res) {
   // })
 }
 
+
 function get(req, res) {
+
+  //door req.param worden alle projecten die uit de url zijn gekomen in een var gestopt.
   var id = req.params.id
-  var has
+  // hier krijg je data van de database. In dit geval vragen we niet alles op, maar alleen de id uits de functie get.
+  var result = {errors: [], data: db.get(id)}
+  // Toegang krijgen tot detail.ejs (een template) waardoor je toegang krijgt tot die data.
+  res.render('detail.ejs', Object.assign({}, result, helpers))
 
-  try {
-    has = db.has(id)
-  } catch (err) {
-    onerror(400, res)
-  }
+  res.render('error.ejs',Object.assign( { error: err }, result, helpers))
 
-  if (has) {
-    var result = {
-      data: db.get(id)
-    }
-    res.format({
-      json: () => res.json(result),
-      html: () => res.render('detail.ejs', Object.assign({}, result, helpers))
-    })
+
 
 }
+
+
+// function get(req, res) {
+//   var id = req.params.id
+//   var has
+//
+//   try {
+//     has = db.has(id)
+//   } catch (err) {
+//     onerror(400, res)
+//   }
+//
+//   if (has) {
+//     var result = {
+//       data: db.get(id)
+//     }
+//     res.format({
+//       json: () => res.json(result),
+//       html: () => res.render('detail.ejs', Object.assign({}, result, helpers))
+//     })
+//   } else if (db.removed(id)) {
+//     onerror(410, res)
+//   } else {
+//     onerror(404, res)
+//   }
+// }
