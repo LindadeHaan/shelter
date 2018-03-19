@@ -51,29 +51,3 @@ function get(req, res) {
 
 
 }
-
-
-// function get(req, res) {
-//   var id = req.params.id
-//   var has
-//
-//   try {
-//     has = db.has(id)
-//   } catch (err) {
-//     onerror(400, res)
-//   }
-//
-//   if (has) {
-//     var result = {
-//       data: db.get(id)
-//     }
-//     res.format({
-//       json: () => res.json(result),
-//       html: () => res.render('detail.ejs', Object.assign({}, result, helpers))
-//     })
-//   } else if (db.removed(id)) {
-//     onerror(410, res)
-//   } else {
-//     onerror(404, res)
-//   }
-// }
